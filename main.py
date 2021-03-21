@@ -30,7 +30,7 @@ class MyClient(discord.Client):
         titles = getlink.gl(message.content)
         RTXT = ""
         for x in titles:
-            RTXT = RTXT + self.baseURL.format(x)
+            RTXT = RTXT + self.baseURL.format(x) + "\n"
         if RTXT != "":
             await message.channel.send(RTXT)
         return
