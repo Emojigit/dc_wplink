@@ -1,5 +1,6 @@
 from modules import getlink
 import requests, discord, logging, git, os
+from discord.ext import commands
 from git.exc import InvalidGitRepositoryError
 log = logging.getLogger("MainScript" if __name__ == "__main__" else __name__)
 chans = []
@@ -26,35 +27,41 @@ def token():
 def baseURL():
     return GFC("baseURL.txt")
 
-class MyClient(discord.Client):
-    def __init__(self,base):
-        self.baseURL = base
-        discord.Client.__init__(self)
-    async def on_ready(self):
-        print('Logged on as', self.user)
 
-    async def on_message(self, message):
-        # don't respond to ourselves
-        if message.author == self.user:
-            return
-        if message.channel not in chans:
-            chans.append(message.channel)
-            if dirty():
-                await message.channel.send("This bot is not in the stable state.")
-        titles = getlink.gl(message.content)
-        RTXT = ""
-        for x in titles:
-            RTXT = RTXT + self.baseURL.format(x) + "\n"
-        if RTXT != "":
-            await message.channel.send(RTXT)
+bot = commands.Bot(command_prefix='/', description="Wikipedia Link Bot")
+
+@bot.event
+async def on_ready():
+    print('Logged in as')
+    print(bot.user.name)
+    print(bot.user.id)
+    print('------')
+
+bu = baseURL()
+
+@bot.event
+async def on_message(message):
+    # don't respond to ourselves
+    if message.author == bot.user:
         return
-    async def on_guild_join(self,G):
-        await G.system_channel.send("Thank you for using this robot. When you enter `[[page name]]` or `{{template name}}`, the robot will automatically reply with a link.")
+    if message.channel not in chans:
+        chans.append(message.channel)
+        if dirty():
+            await message.channel.send("This bot is not in the stable state.")
+    titles = getlink.gl(message.content)
+    RTXT = ""
+    for x in titles:
+        RTXT = RTXT + bu.format(x) + "\n"
+    if RTXT != "":
+        await message.channel.send(RTXT)
+    return
 
+@bot.event
+async def on_guild_join(G):
+    await G.system_channel.send("Thank you for using this robot. When you enter `[[page name]]` or `{{template name}}`, the robot will automatically reply with a link.")
 
 if __name__ == "__main__":
-    client = MyClient(baseURL())
-    client.run(token())
+    bot.run(token())
 
 
         
