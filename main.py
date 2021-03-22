@@ -48,6 +48,9 @@ class MyClient(discord.Client):
         if RTXT != "":
             await message.channel.send(RTXT)
         return
+    async def on_guild_join(self,G):
+        await G.system_channel.send("Thank you for using this robot. When you enter `[[page name]]` or `{{template name}}`, the robot will automatically reply with a link.")
+
 
 if __name__ == "__main__":
     client = MyClient(baseURL())

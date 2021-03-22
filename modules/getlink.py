@@ -5,8 +5,13 @@ def gl(cont):
         Lcont = x[0]
         PLNK = re.search(r'^\[\[([^|#]+)(?:#([^|]+))?.*?]]$',Lcont)
         if PLNK != None:
-             RLST.append(PLNK.group(1))
-             continue
+            try:
+                SNAME = PLNK.group(2)
+                SECTION = ("#{}".format(SNAME)) if SNAME != None else ""
+            except IndexError:
+                SECTION = ""
+            RLST.append(PLNK.group(1) + SECTION)
+            continue
         FUNC = re.search(r'^{{ *#(exer|if|ifeq|ifexist|ifexpr|switch|time|language|babel|invoke) *:',Lcont)
         if FUNC != None:
             RLST.append("mw:Help:Extension:ParserFunctions#{}".format(FUNC))
