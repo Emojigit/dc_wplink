@@ -64,7 +64,7 @@ async def conf(ctx, cname: str, value: str):
         else:
             AVAL = None
             STAT = "Failed"
-    """ # TODO: allow optin or/and optout
+        """ # TODO: allow optin or/and optout
     elif cname == "opt":
         if value == "False" or value == "false":
             AVAL = False
@@ -77,7 +77,7 @@ async def conf(ctx, cname: str, value: str):
             except re.error:
                 AVAL = None
                 STAT = "Regex Error"
-    """
+        """
     else:
         AVAL = None
         STAT = "Invalid setting key"
