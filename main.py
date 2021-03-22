@@ -41,7 +41,7 @@ def save(cont):
         f.write(json.dumps(cont))
 
 
-bot = commands.Bot(command_prefix='/', description="Wikipedia Link Bot", intents=discord.Intents.default())
+bot = commands.Bot(command_prefix='/', description="Wikipedia Link Bot")
 
 @bot.event
 async def on_ready():
