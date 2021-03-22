@@ -1,6 +1,16 @@
 from modules import getlink
-import requests, discord, logging
+import requests, discord, logging, git, os
+from git.exc import InvalidGitRepositoryError
 log = logging.getLogger("MainScript" if __name__ == "__main__" else __name__)
+chans = []
+
+def dirty():
+    fd = os.path.dirname(os.path.realpath(__file__))
+    try:
+        gr = git.Repo(fd)
+    except InvalidGitRepositoryError:
+        return false
+    return gr.is_dirty(untracked_files=True)
 
 def GFC(fname):
     try:
@@ -27,6 +37,10 @@ class MyClient(discord.Client):
         # don't respond to ourselves
         if message.author == self.user:
             return
+        if message.channel not in chans:
+            chans.append(message.channel)
+            if dirty():
+                await message.channel.send("This bot is not in the stable state.")
         titles = getlink.gl(message.content)
         RTXT = ""
         for x in titles:
