@@ -1,5 +1,5 @@
 from modules import getlink
-import requests, discord, logging, git, os, json
+import requests, discord, logging, git, os, json, re
 from discord.ext import commands
 from git.exc import InvalidGitRepositoryError
 log = logging.getLogger("MainScript" if __name__ == "__main__" else __name__)
@@ -64,9 +64,23 @@ async def conf(ctx, cname: str, value: str):
         else:
             AVAL = None
             STAT = "Failed"
+    """ # TODO: allow optin or/and optout
+    elif cname == "opt":
+        if value == "False" or value == "false":
+            AVAL = False
+            STAT = "Disabled"
+        else:
+            try:
+                re.compile(value)
+                AVAL = value
+                STAT = "Success"
+            except re.error:
+                AVAL = None
+                STAT = "Regex Error"
+    """
     else:
-        await ctx.send("invalid setting")
-        return
+        AVAL = None
+        STAT = "Invalid setting key"
     ALLC = load()
     try:
         CONF = ALLC[str(ctx.guild.id)]
@@ -95,11 +109,20 @@ async def on_message(message):
         CONF = ALLC[str(message.channel.guild.id)]
     try:
         if CONF["disable_link_reply"] == True:
-            print("dlr")
             await bot.process_commands(message)
             return
     except KeyError:
         pass
+    """ # TODO: allow optin or/and optout
+    try:
+        opt = CONF["opt"]
+        if opt != False:
+            if re.search(opt,message.content) == None:
+                await bot.process_commands(message)
+                return
+    except KeyError:
+        pass
+    """
     titles = getlink.gl(message.content)
     RTXT = ""
     for x in titles:
