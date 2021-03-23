@@ -45,6 +45,7 @@ bot = commands.Bot(command_prefix='/', description="Wikipedia Link Bot")
 
 @bot.event
 async def on_ready():
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="for Wikipedia links"))
     print('Logged in as')
     print(bot.user.name)
     print(bot.user.id)
