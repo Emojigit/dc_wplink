@@ -2,6 +2,7 @@ from modules import getlink
 import requests, discord, logging, git, os, json, re
 from discord.ext import commands
 from git.exc import InvalidGitRepositoryError
+from urllib.parse import quote as URLE
 log = logging.getLogger("MainScript" if __name__ == "__main__" else __name__)
 chans = []
 
@@ -127,7 +128,9 @@ async def on_message(message):
     titles = getlink.gl(message.content)
     RTXT = ""
     for x in titles:
-        RTXT = RTXT + bu.format(x) + "\n"
+        xl = x.replace(" ","_")
+        xl = URLE(xl)
+        RTXT = RTXT + bu.format(xl) + "\n"
     if RTXT != "":
         await message.channel.send(RTXT)
     await bot.process_commands(message)
